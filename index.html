@@ -1,0 +1,1715 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محلل مصادر الامتحانات - النسخة الاحترافية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header .version {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .mode-btn {
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: var(--primary);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            background: var(--light);
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-panel {
+            display: none;
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .file-upload {
+            border: 3px dashed var(--primary);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f0f4ff;
+            border-color: var(--secondary);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-right: 4px solid var(--success);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid var(--light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-card.selected {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .feature-card input[type="checkbox"] {
+            margin-left: 10px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bar-label {
+            min-width: 150px;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .bar-visual {
+            flex: 1;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-weight: bold;
+            transition: width 1s ease;
+        }
+
+        .question-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .similarity-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .badge-high {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .badge-medium {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .badge-low {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .question-text {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 4px solid var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .sources-list {
+            margin-top: 20px;
+        }
+
+        .source-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .source-info {
+            flex: 1;
+        }
+
+        .source-name {
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .source-url {
+            font-size: 0.85em;
+            color: #666;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .confidence-meter {
+            width: 120px;
+            text-align: center;
+        }
+
+        .confidence-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 0 auto 5px;
+        }
+
+        .indicators {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            border-right: 4px solid var(--warning);
+            margin-top: 15px;
+        }
+
+        .indicators h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .indicators ul {
+            list-style-position: inside;
+            color: #856404;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .database-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .history-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .language-selector label {
+            font-weight: 700;
+        }
+
+        .language-selector select,
+        .homework-controls select {
+            padding: 10px 14px;
+            border: 2px solid rgba(255,255,255,0.7);
+            border-radius: 10px;
+            background: white;
+            color: var(--dark);
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .homework-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            margin-top: 18px;
+        }
+
+        .homework-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .homework-result {
+            margin-top: 20px;
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 18px;
+            line-height: 1.8;
+        }
+
+        .homework-result h4 {
+            color: var(--primary);
+            margin: 12px 0 8px;
+        }
+
+        .homework-note {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .mode-selector {
+                flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 محلل مصادر الامتحانات - النسخة الاحترافية</h1>
+            <p style="font-size: 1.1em; margin-top: 10px;">كشف المصادر | تحليل الأنماط | كشف النسخ | إحصائيات متقدمة</p>
+            <div class="version">v2.1 Pro</div>
+            <div class="language-selector">
+                <label id="languageLabel" for="languageSelect">🌍 اللغة:</label>
+                <select id="languageSelect" onchange="setLanguage(this.value)">
+                    <option value="ar">العربية</option>
+                    <option value="en">English</option>
+                    <option value="tr">Türkçe</option>
+                </select>
+            </div>
+            
+            <div class="mode-selector">
+                <button class="mode-btn active" onclick="switchMode('teacher', this)">
+                    👨‍🏫 وضع الأستاذ
+                </button>
+                <button class="mode-btn" onclick="switchMode('student', this)">
+                    👨‍🎓 وضع الطالب
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Tabs -->
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchMainTab('upload', this)">
+                    📤 رفع الامتحان
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('analyze', this)">
+                    🔬 التحليل المتقدم
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('compare', this)">
+                    📊 المقارنة
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('database', this)">
+                    💾 قاعدة البيانات
+                </button>
+                <button class="tab-btn" onclick="switchMainTab('homework', this)">
+                    ✍️ مساعد الواجب
+                </button>
+            </div>
+
+            <!-- Upload Tab -->
+            <div id="upload-tab" class="tab-panel active">
+                <div class="input-group">
+                    <label>📝 طريقة الإدخال:</label>
+                    <div class="feature-grid">
+                        <div class="feature-card selected" onclick="selectInputMethod('text', this)">
+                            <input type="radio" name="input-method" checked> نص مباشر
+                        </div>
+                        <div class="feature-card" onclick="selectInputMethod('image', this)">
+                            <input type="radio" name="input-method"> صورة
+                        </div>
+                        <div class="feature-card" onclick="selectInputMethod('file', this)">
+                            <input type="radio" name="input-method"> ملف PDF/Word
+                        </div>
+                    </div>
+                </div>
+
+                <div id="text-input" class="input-group">
+                    <label>أدخل نص الأسئلة:</label>
+                    <textarea id="questionText" placeholder="الصق أسئلة الامتحان هنا..."></textarea>
+                </div>
+
+                <div id="image-input" class="input-group" style="display: none;">
+                    <div class="file-upload" onclick="document.getElementById('imageFile').click()">
+                        <input type="file" id="imageFile" accept="image/*" onchange="handleImageUpload(event)">
+                        <div style="font-size: 3em; margin-bottom: 10px;">📷</div>
+                        <p><strong>اضغط لتحميل صورة الامتحان</strong></p>
+                        <p style="margin-top: 10px; color: #666;">JPG, PNG, PDF</p>
+                    </div>
+                    <div id="imagePreview"></div>
+                </div>
+
+                <div id="file-input" class="input-group" style="display: none;">
+                    <div class="file-upload" onclick="document.getElementById('pdfFile').click()">
+                        <input type="file" id="pdfFile" accept=".pdf,.doc,.docx" onchange="handleFileUpload(event)">
+                        <div style="font-size: 3em; margin-bottom: 10px;">📄</div>
+                        <p><strong>اضغط لتحميل ملف الامتحان</strong></p>
+                        <p style="margin-top: 10px; color: #666;">PDF, Word</p>
+                    </div>
+                    <div id="fileInfo"></div>
+                </div>
+            </div>
+
+            <!-- Analysis Tab -->
+            <div id="analyze-tab" class="tab-panel">
+                <h3 style="margin-bottom: 20px; color: var(--dark);">🎯 خيارات التحليل المتقدم</h3>
+                
+                <div id="teacher-features" class="feature-grid">
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'source_detection')">
+                        <input type="checkbox" checked> 🔍 كشف المصادر
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'plagiarism_check')">
+                        <input type="checkbox" checked> 📋 كشف النسخ
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'web_search')">
+                        <input type="checkbox" checked> 🌐 البحث على الإنترنت
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'pattern_analysis')">
+                        <input type="checkbox" checked> 📊 تحليل الأنماط
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'similarity_score')">
+                        <input type="checkbox" checked> 🎯 درجة التشابه
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'question_fingerprint')">
+                        <input type="checkbox" checked> 🧬 بصمة السؤال
+                    </div>
+                </div>
+
+                <div id="student-features" class="feature-grid" style="display: none;">
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'study_sources')">
+                        <input type="checkbox" checked> 📚 مصادر الدراسة
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'difficulty_level')">
+                        <input type="checkbox" checked> 📈 مستوى الصعوبة
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'video_links')">
+                        <input type="checkbox" checked> 🎥 روابط الشروحات
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'practice_questions')">
+                        <input type="checkbox" checked> 📝 أسئلة تدريبية
+                    </div>
+                    <div class="feature-card selected" onclick="toggleFeature(this, 'study_plan')">
+                        <input type="checkbox" checked> 📅 خطة دراسية
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="startAnalysis()">
+                    🚀 ابدأ التحليل الشامل
+                </button>
+            </div>
+
+            <!-- Compare Tab -->
+            <div id="compare-tab" class="tab-panel">
+                <h3 style="margin-bottom: 20px; color: var(--dark);">📊 مقارنة امتحانات متعددة</h3>
+                <p style="color: #666; margin-bottom: 20px;">قريباً: مقارنة عدة امتحانات لاكتشاف الأنماط والتشابه</p>
+                <div class="file-upload">
+                    <div style="font-size: 3em; margin-bottom: 10px;">📚</div>
+                    <p>قم بتحميل عدة امتحانات للمقارنة</p>
+                </div>
+            </div>
+
+            <!-- Database Tab -->
+            <div id="database-tab" class="tab-panel">
+                <div class="database-section">
+                    <h3 style="margin-bottom: 20px; color: var(--dark);">💾 سجل التحليلات السابقة</h3>
+                    <div id="historyList">
+                        <p style="color: #666; text-align: center; padding: 40px;">
+                            لا توجد تحليلات محفوظة بعد
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Homework Tab -->
+            <div id="homework-tab" class="tab-panel">
+                <h3 id="homeworkTitle" style="margin-bottom: 15px; color: var(--dark);">✍️ مساعد الواجب التعليمي</h3>
+                <p id="homeworkIntro" style="color: #666; margin-bottom: 15px;">اكتب السؤال أو الوظيفة، وسيعطيك المساعد شرحاً وخطوات حل بأسلوب طالب فاهم، مع نقاط مراجعة تساعدك تتعلم لا تنسخ فقط.</p>
+                <div class="homework-panel">
+                    <div class="input-group">
+                        <label id="homeworkQuestionLabel">نص السؤال أو الواجب:</label>
+                        <textarea id="homeworkText" placeholder="اكتب السؤال هنا..."></textarea>
+                    </div>
+                    <div class="homework-controls">
+                        <label id="homeworkStyleLabel" for="homeworkStyle">طريقة المساعدة:</label>
+                        <select id="homeworkStyle">
+                            <option value="guided">شرح بخطوات</option>
+                            <option value="hints">تلميحات أولاً</option>
+                            <option value="model">حل نموذجي مع تفسير</option>
+                        </select>
+                    </div>
+                    <button id="homeworkSolveBtn" class="btn-primary" onclick="solveHomework()">✨ ساعدني في الحل</button>
+                    <div id="homeworkResult"></div>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <h3 style="color: var(--primary); margin-bottom: 15px;">جارٍ التحليل المتقدم...</h3>
+                <p style="color: #666; margin-bottom: 20px;" id="loadingStatus">استخراج الأسئلة...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar">0%</div>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="results" id="results">
+                <!-- Results will be inserted here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📥 تصدير التقرير</h2>
+                <span class="close-modal" onclick="closeModal('exportModal')">&times;</span>
+            </div>
+            <div class="feature-grid">
+                <div class="feature-card" onclick="exportReport('pdf')">
+                    📄 PDF
+                </div>
+                <div class="feature-card" onclick="exportReport('excel')">
+                    📊 Excel
+                </div>
+                <div class="feature-card" onclick="exportReport('json')">
+                    💾 JSON
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // Global state
+        let currentMode = 'teacher';
+        let currentInputMethod = 'text';
+        let uploadedImage = null;
+        let uploadedFile = null;
+        let analysisResults = null;
+        let analysisHistory = [];
+        let currentLanguage = 'ar';
+        const languageNames = { ar: 'العربية', en: 'English', tr: 'Türkçe' };
+        const translations = {
+            ar: {
+                title: '🎓 محلل مصادر الامتحانات - النسخة الاحترافية',
+                subtitle: 'كشف المصادر | تحليل الأنماط | كشف النسخ | إحصائيات متقدمة',
+                languageLabel: '🌍 اللغة:', teacher: '👨‍🏫 وضع الأستاذ', student: '👨‍🎓 وضع الطالب',
+                tabs: ['📤 رفع الامتحان', '🔬 التحليل المتقدم', '📊 المقارنة', '💾 قاعدة البيانات', '✍️ مساعد الواجب'],
+                homeworkTitle: '✍️ مساعد الواجب التعليمي',
+                homeworkIntro: 'اكتب السؤال أو الوظيفة، وسيعطيك المساعد شرحاً وخطوات حل بأسلوب طالب فاهم، مع نقاط مراجعة تساعدك تتعلم لا تنسخ فقط.',
+                homeworkQuestionLabel: 'نص السؤال أو الواجب:', homeworkStyleLabel: 'طريقة المساعدة:', homeworkSolveBtn: '✨ ساعدني في الحل',
+                homeworkPlaceholder: 'اكتب السؤال هنا...', styles: ['شرح بخطوات', 'تلميحات أولاً', 'حل نموذجي مع تفسير'],
+                emptyHomework: 'الرجاء إدخال نص السؤال أو الواجب', homeworkLoading: 'جارٍ إعداد المساعدة...', fileProtocol: 'يجب فتح الملف عبر خادم ويب (localhost) وليس مباشرة من المجلد.',
+                summary: 'ملخص المطلوب', steps: 'خطوات الحل', answer: 'الإجابة المقترحة', mistakes: 'أخطاء شائعة', checklist: 'قائمة مراجعة للطالب', variant: 'تدريب مشابه', note: 'ملاحظة: استخدم الناتج للفهم والمراجعة، واكتب إجابتك النهائية بأسلوبك أنت.'
+            },
+            en: {
+                title: '🎓 Exam Source Analyzer - Pro Edition',
+                subtitle: 'Source detection | Pattern analysis | Plagiarism risk | Advanced statistics',
+                languageLabel: '🌍 Language:', teacher: '👨‍🏫 Teacher Mode', student: '👨‍🎓 Student Mode',
+                tabs: ['📤 Upload Exam', '🔬 Advanced Analysis', '📊 Compare', '💾 Database', '✍️ Homework Helper'],
+                homeworkTitle: '✍️ Educational Homework Helper',
+                homeworkIntro: 'Paste a question or assignment to get clear steps, a student-friendly explanation, and review points that help you learn instead of only copying.',
+                homeworkQuestionLabel: 'Question or assignment text:', homeworkStyleLabel: 'Help style:', homeworkSolveBtn: '✨ Help me solve it',
+                homeworkPlaceholder: 'Write the question here...', styles: ['Step-by-step explanation', 'Hints first', 'Model answer with explanation'],
+                emptyHomework: 'Please enter the question or assignment text', homeworkLoading: 'Preparing help...', fileProtocol: 'Open this file through a local web server (localhost), not directly from the folder.',
+                summary: 'Task Summary', steps: 'Solution Steps', answer: 'Suggested Answer', mistakes: 'Common Mistakes', checklist: 'Student Checklist', variant: 'Similar Practice', note: 'Note: Use this to understand and review, then write your final answer in your own style.'
+            },
+            tr: {
+                title: '🎓 Sınav Kaynak Analizörü - Pro Sürüm',
+                subtitle: 'Kaynak tespiti | Örüntü analizi | Kopya riski | Gelişmiş istatistikler',
+                languageLabel: '🌍 Dil:', teacher: '👨‍🏫 Öğretmen Modu', student: '👨‍🎓 Öğrenci Modu',
+                tabs: ['📤 Sınav Yükle', '🔬 Gelişmiş Analiz', '📊 Karşılaştır', '💾 Veritabanı', '✍️ Ödev Yardımcısı'],
+                homeworkTitle: '✍️ Eğitici Ödev Yardımcısı',
+                homeworkIntro: 'Soruyu veya ödevi yaz; yardımcı sana anlaşılır adımlar, öğrenci dostu açıklama ve öğrenmeni destekleyen kontrol noktaları verir.',
+                homeworkQuestionLabel: 'Soru veya ödev metni:', homeworkStyleLabel: 'Yardım biçimi:', homeworkSolveBtn: '✨ Çözmeme yardım et',
+                homeworkPlaceholder: 'Soruyu buraya yaz...', styles: ['Adım adım açıklama', 'Önce ipuçları', 'Açıklamalı örnek çözüm'],
+                emptyHomework: 'Lütfen soru veya ödev metnini girin', homeworkLoading: 'Yardım hazırlanıyor...', fileProtocol: 'Dosyayı doğrudan klasörden değil, yerel bir web sunucusu (localhost) üzerinden açın.',
+                summary: 'Görev Özeti', steps: 'Çözüm Adımları', answer: 'Önerilen Cevap', mistakes: 'Yaygın Hatalar', checklist: 'Öğrenci Kontrol Listesi', variant: 'Benzer Alıştırma', note: 'Not: Bunu anlamak ve tekrar etmek için kullan; son cevabını kendi üslubunla yaz.'
+            }
+        };
+        let selectedFeatures = new Set([
+            'source_detection', 'plagiarism_check', 'web_search', 
+            'pattern_analysis', 'similarity_score', 'question_fingerprint'
+        ]);
+
+        function t(key) {
+            return (translations[currentLanguage] && translations[currentLanguage][key]) || translations.ar[key] || key;
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = translations[lang] ? lang : 'ar';
+            document.documentElement.lang = currentLanguage;
+            document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.body.style.direction = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+            document.querySelector('.header h1').textContent = t('title');
+            document.querySelector('.header p').textContent = t('subtitle');
+            document.getElementById('languageLabel').textContent = t('languageLabel');
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            if (modeButtons[0]) modeButtons[0].textContent = t('teacher');
+            if (modeButtons[1]) modeButtons[1].textContent = t('student');
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                if (t('tabs')[i]) btn.textContent = t('tabs')[i];
+            });
+            document.getElementById('homeworkTitle').textContent = t('homeworkTitle');
+            document.getElementById('homeworkIntro').textContent = t('homeworkIntro');
+            document.getElementById('homeworkQuestionLabel').textContent = t('homeworkQuestionLabel');
+            document.getElementById('homeworkStyleLabel').textContent = t('homeworkStyleLabel');
+            document.getElementById('homeworkSolveBtn').textContent = t('homeworkSolveBtn');
+            document.getElementById('homeworkText').placeholder = t('homeworkPlaceholder');
+            document.querySelectorAll('#homeworkStyle option').forEach((opt, i) => opt.textContent = t('styles')[i]);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => setLanguage(currentLanguage));
+
+        // Mode switching
+        function switchMode(mode, el) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            
+            if (mode === 'teacher') {
+                document.getElementById('teacher-features').style.display = 'grid';
+                document.getElementById('student-features').style.display = 'none';
+                selectedFeatures = new Set([
+                    'source_detection', 'plagiarism_check', 'web_search', 
+                    'pattern_analysis', 'similarity_score', 'question_fingerprint'
+                ]);
+            } else {
+                document.getElementById('teacher-features').style.display = 'none';
+                document.getElementById('student-features').style.display = 'grid';
+                selectedFeatures = new Set([
+                    'study_sources', 'difficulty_level', 'video_links', 
+                    'practice_questions', 'study_plan'
+                ]);
+            }
+        }
+
+        // Tab switching
+        function switchMainTab(tab, el) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (el) el.classList.add('active');
+            
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(tab + '-tab').classList.add('active');
+        }
+
+        // Input method selection
+        function selectInputMethod(method, el) {
+            currentInputMethod = method;
+            const uploadTab = document.getElementById('upload-tab');
+            uploadTab.querySelectorAll('.feature-card').forEach(card => {
+                card.classList.remove('selected');
+                card.querySelector('input[type="radio"]').checked = false;
+            });
+            el.classList.add('selected');
+            el.querySelector('input[type="radio"]').checked = true;
+            
+            document.getElementById('text-input').style.display = 'none';
+            document.getElementById('image-input').style.display = 'none';
+            document.getElementById('file-input').style.display = 'none';
+            document.getElementById(method + '-input').style.display = 'block';
+        }
+
+        // Feature toggle
+        function toggleFeature(element, feature) {
+            element.classList.toggle('selected');
+            const checkbox = element.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                selectedFeatures.add(feature);
+            } else {
+                selectedFeatures.delete(feature);
+            }
+        }
+
+        // File handling
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedImage = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').innerHTML = `
+                        <div class="file-info">
+                            <img src="${e.target.result}" style="max-width: 100%; max-height: 300px; border-radius: 10px; margin-bottom: 10px;">
+                            <p style="color: var(--success); font-weight: bold;">✓ تم تحميل: ${file.name}</p>
+                        </div>
+                    `;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedFile = file;
+                const fileSize = (file.size / 1024).toFixed(2);
+                document.getElementById('fileInfo').innerHTML = `
+                    <div class="file-info">
+                        <p style="color: var(--success); font-weight: bold;">✓ تم تحميل الملف</p>
+                        <p style="color: #666; margin-top: 5px;">الاسم: ${file.name}</p>
+                        <p style="color: #666;">الحجم: ${fileSize} KB</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Main analysis function
+        async function startAnalysis() {
+            // Get input
+            let questionsText = '';
+            let imageData = null;
+
+            if (currentInputMethod === 'text') {
+                questionsText = document.getElementById('questionText').value.trim();
+                if (!questionsText) {
+                    alert('الرجاء إدخال نص الأسئلة');
+                    return;
+                }
+            } else if (currentInputMethod === 'image') {
+                if (!uploadedImage) {
+                    alert('الرجاء تحميل صورة الامتحان');
+                    return;
+                }
+                try {
+                    imageData = await new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result.split(',')[1]);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(uploadedImage);
+                    });
+                } catch (err) {
+                    alert('حدث خطأ في قراءة الصورة');
+                    return;
+                }
+            } else if (currentInputMethod === 'file') {
+                if (!uploadedFile) {
+                    alert('الرجاء تحميل ملف الامتحان');
+                    return;
+                }
+                questionsText = "ملف محمّل";
+            }
+
+            // Show loading with progress
+            showLoading();
+            
+            try {
+                // Build prompt based on mode and features
+                let prompt = buildAnalysisPrompt(currentMode, selectedFeatures, questionsText);
+                
+                // Prepare API request
+                let messageContent;
+                if (imageData) {
+                    messageContent = [
+                        {
+                            type: "image",
+                            source: {
+                                type: "base64",
+                                media_type: uploadedImage.type,
+                                data: imageData
+                            }
+                        },
+                        { type: "text", text: prompt }
+                    ];
+                } else {
+                    messageContent = prompt;
+                }
+
+                // Check if running from file:// (CORS will block API)
+                if (window.location.protocol === 'file:') {
+                    throw new Error('يجب فتح الملف عبر خادم ويب (localhost) وليس مباشرة من المجلد. استخدم VS Code Live Server أو أي خادم محلي.');
+                }
+
+                // Call API
+                const response = await fetch(getApiUrl(), {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 8000,
+                        system: "أنت نظام تحليل امتحانات. يجب أن تُرجع JSON صالحاً فقط بدون أي نص إضافي قبله أو بعده، ولا backticks، ولا شرح. فقط JSON خام.",
+                        messages: [{ role: "user", content: messageContent }]
+                    })
+                });
+
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error(`خطأ من الخادم: ${response.status} - ${errData?.error?.message || ''}`);
+                }
+
+                const data = await response.json();
+                let analysisText = data.content
+                    .filter(item => item.type === "text")
+                    .map(item => item.text)
+                    .join("\n");
+
+                // Extract JSON robustly
+                // Try to find JSON block between { } first
+                const jsonMatch = analysisText.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    analysisText = jsonMatch[0];
+                } else {
+                    // Fallback: strip markdown fences
+                    analysisText = analysisText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+                }
+
+                try {
+                    analysisResults = JSON.parse(analysisText);
+                } catch (parseError) {
+                    console.error('JSON received:', analysisText);
+                    throw new Error('فشل تحليل الرد من الذكاء الاصطناعي. يرجى المحاولة مرة أخرى.');
+                }
+                
+                // Save to history
+                saveToHistory(analysisResults);
+                
+                // Display results
+                displayResults(analysisResults);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                const msg = error.message.includes('Failed to fetch')
+                    ? 'تعذّر الاتصال بالخادم. تأكد أن الملف مفتوح عبر localhost وليس مباشرة من المجلد (file://).'
+                    : error.message;
+                alert('⚠️ ' + msg);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function buildAnalysisPrompt(mode, features, text) {
+            let prompt = `أنت نظام متقدم لتحليل مصادر أسئلة الامتحانات.
+
+الوضع: ${mode === 'teacher' ? 'وضع الأستاذ (كشف المصادر والنسخ)' : 'وضع الطالب (مساعدة الدراسة)'}
+
+لغة التقرير المطلوبة: ${languageNames[currentLanguage] || 'العربية'}
+يجب أن تكون كل النصوص الظاهرة للمستخدم في الرد بهذه اللغة.
+
+الميزات المطلوبة: ${Array.from(features).join(', ')}
+
+الأسئلة:
+${text}
+
+قم بإرجاع تحليل شامل بصيغة JSON فقط (بدون نص إضافي) بهذا الشكل:
+
+{
+  "exam_info": {
+    "total_questions": 5,
+    "subject": "اسم المادة",
+    "difficulty_avg": "متوسط/صعب/سهل",
+    "analysis_date": "2024-01-01"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "نص السؤال",
+      "sources": [
+        {
+          "name": "اسم المصدر",
+          "type": "textbook/website/question_bank",
+          "url": "رابط إن وجد",
+          "confidence": 85,
+          "similarity_score": 92,
+          "indicators": ["مؤشر 1", "مؤشر 2"]
+        }
+      ],
+      "plagiarism_risk": "high/medium/low",
+      "difficulty": "easy/medium/hard",
+      "study_resources": ["مصدر 1", "مصدر 2"],
+      "video_links": ["رابط فيديو 1"],
+      "fingerprint": "unique-id-xyz"
+    }
+  ],
+  "statistics": {
+    "sources_breakdown": {
+      "textbook": 60,
+      "website": 30,
+      "question_bank": 10
+    },
+    "plagiarism_summary": {
+      "high_risk": 2,
+      "medium_risk": 1,
+      "low_risk": 2
+    },
+    "difficulty_distribution": {
+      "easy": 1,
+      "medium": 3,
+      "hard": 1
+    }
+  },
+  "recommendations": ["توصية 1", "توصية 2"]
+}`;
+            
+            return prompt;
+        }
+
+        function showLoading() {
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressBar').textContent = '0%';
+            
+            const statuses = [
+                'استخراج الأسئلة...',
+                'البحث في قواعد البيانات...',
+                'تحليل الأنماط...',
+                'حساب درجات التشابه...',
+                'إنشاء التقرير...'
+            ];
+            
+            let progress = 0;
+            let statusIndex = 0;
+            
+            window._loadingInterval = setInterval(() => {
+                if (progress < 80) {
+                    progress += 16;
+                    document.getElementById('progressBar').style.width = progress + '%';
+                    document.getElementById('progressBar').textContent = progress + '%';
+                    if (statusIndex < statuses.length) {
+                        document.getElementById('loadingStatus').textContent = statuses[statusIndex];
+                        statusIndex++;
+                    }
+                }
+            }, 800);
+        }
+
+        function hideLoading() {
+            if (window._loadingInterval) {
+                clearInterval(window._loadingInterval);
+                window._loadingInterval = null;
+            }
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('progressBar').textContent = '100%';
+            document.getElementById('loadingStatus').textContent = 'اكتمل التحليل!';
+            setTimeout(() => {
+                document.getElementById('loading').classList.remove('active');
+            }, 400);
+        }
+
+        function displayResults(analysis) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <!-- Summary Card -->
+                <div class="summary-card">
+                    <h2 style="margin-bottom: 20px;">📊 ملخص التحليل الشامل</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-number">${analysis.exam_info.total_questions}</span>
+                            <span class="stat-label">عدد الأسئلة</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">${analysis.exam_info.subject}</span>
+                            <span class="stat-label">المادة</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">${analysis.exam_info.difficulty_avg}</span>
+                            <span class="stat-label">الصعوبة</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">${analysis.statistics.plagiarism_summary.high_risk}</span>
+                            <span class="stat-label">أسئلة عالية المخاطر</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="chart-container">
+                    <h3>📊 توزيع المصادر</h3>
+                    <div class="bar-chart" id="sourcesChart"></div>
+                </div>
+
+                <div class="chart-container">
+                    <h3>⚠️ تقييم مخاطر النسخ</h3>
+                    <div class="bar-chart" id="plagiarismChart"></div>
+                </div>
+
+                <!-- Questions -->
+                <h3 style="margin: 30px 0 20px; color: var(--dark);">📝 تحليل مفصل لكل سؤال</h3>
+            `;
+
+            // Add questions
+            analysis.questions.forEach((q, index) => {
+                const topSource = q.sources[0];
+                const riskClass = q.plagiarism_risk === 'high' ? 'badge-high' : 
+                                 q.plagiarism_risk === 'medium' ? 'badge-medium' : 'badge-low';
+                const riskText = q.plagiarism_risk === 'high' ? '⚠️ مخاطر عالية' : 
+                                q.plagiarism_risk === 'medium' ? '⚡ مخاطر متوسطة' : '✅ مخاطر منخفضة';
+
+                html += `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">السؤال ${q.id}</span>
+                            <span class="similarity-badge ${riskClass}">${riskText}</span>
+                        </div>
+                        
+                        <div class="question-text">
+                            <strong>${q.question}</strong>
+                        </div>
+
+                        <div class="sources-list">
+                            <h4 style="margin-bottom: 15px;">🔍 المصادر المكتشفة:</h4>
+                `;
+
+                q.sources.forEach(source => {
+                    const confidenceColor = source.confidence >= 70 ? 'var(--success)' : 
+                                          source.confidence >= 50 ? 'var(--warning)' : 'var(--danger)';
+                    
+                    html += `
+                        <div class="source-item">
+                            <div class="source-info">
+                                <div class="source-name">${getSourceIcon(source.type)} ${source.name}</div>
+                                ${source.url ? `<div class="source-url">${source.url}</div>` : ''}
+                            </div>
+                            <div class="confidence-meter">
+                                <div class="confidence-circle" style="background: ${confidenceColor}; color: white;">
+                                    ${source.confidence}%
+                                </div>
+                                <small>التشابه: ${source.similarity_score}%</small>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (topSource.indicators && topSource.indicators.length > 0) {
+                    html += `
+                        <div class="indicators">
+                            <h4>🔎 مؤشرات الكشف:</h4>
+                            <ul>
+                                ${topSource.indicators.map(ind => `<li>${ind}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                if (currentMode === 'student' && q.study_resources) {
+                    html += `
+                        <div style="background: #e8f5e9; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                            <h4 style="color: var(--success); margin-bottom: 10px;">📚 مصادر دراسية موصى بها:</h4>
+                            <ul>
+                                ${q.study_resources.map(res => `<li>${res}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Action buttons
+            html += `
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="openModal('exportModal')">
+                        📥 تصدير التقرير
+                    </button>
+                    <button class="btn btn-warning" onclick="shareResults()">
+                        📤 مشاركة
+                    </button>
+                    <button class="btn btn-danger" onclick="printReport()">
+                        🖨️ طباعة
+                    </button>
+                </div>
+            `;
+
+            resultsDiv.innerHTML = html;
+            resultsDiv.classList.add('active');
+
+            // Draw charts
+            drawSourcesChart(analysis.statistics.sources_breakdown);
+            drawPlagiarismChart(analysis.statistics.plagiarism_summary);
+
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function drawSourcesChart(data) {
+            const chart = document.getElementById('sourcesChart');
+            const total = Object.values(data).reduce((a, b) => a + b, 0);
+            
+            let html = '';
+            for (let [key, value] of Object.entries(data)) {
+                const percentage = Math.round((value / total) * 100);
+                const label = key === 'textbook' ? 'الكتب الدراسية' : 
+                             key === 'website' ? 'المواقع الإلكترونية' : 'بنوك الأسئلة';
+                
+                html += `
+                    <div class="bar-item">
+                        <span class="bar-label">${label}</span>
+                        <div class="bar-visual">
+                            <div class="bar-fill" style="width: ${percentage}%">${percentage}%</div>
+                        </div>
+                    </div>
+                `;
+            }
+            chart.innerHTML = html;
+        }
+
+        function drawPlagiarismChart(data) {
+            const chart = document.getElementById('plagiarismChart');
+            const total = data.high_risk + data.medium_risk + data.low_risk;
+            
+            const items = [
+                { label: 'مخاطر عالية', value: data.high_risk, color: 'var(--danger)' },
+                { label: 'مخاطر متوسطة', value: data.medium_risk, color: 'var(--warning)' },
+                { label: 'مخاطر منخفضة', value: data.low_risk, color: 'var(--success)' }
+            ];
+            
+            let html = '';
+            items.forEach(item => {
+                const percentage = Math.round((item.value / total) * 100);
+                html += `
+                    <div class="bar-item">
+                        <span class="bar-label">${item.label}</span>
+                        <div class="bar-visual">
+                            <div class="bar-fill" style="width: ${percentage}%; background: ${item.color}">
+                                ${item.value} (${percentage}%)
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            chart.innerHTML = html;
+        }
+
+        function getSourceIcon(type) {
+            switch(type) {
+                case 'textbook': return '📚';
+                case 'website': return '🌐';
+                case 'question_bank': return '📋';
+                default: return '📄';
+            }
+        }
+
+        function saveToHistory(analysis) {
+            const historyItem = {
+                id: Date.now(),
+                date: new Date().toLocaleString('ar-SA'),
+                mode: currentMode,
+                totalQuestions: analysis.exam_info.total_questions,
+                subject: analysis.exam_info.subject,
+                data: analysis
+            };
+            
+            analysisHistory.unshift(historyItem);
+            if (analysisHistory.length > 10) analysisHistory.pop();
+            
+            updateHistoryList();
+        }
+
+        function updateHistoryList() {
+            const list = document.getElementById('historyList');
+            if (analysisHistory.length === 0) {
+                list.innerHTML = '<p style="color: #666; text-align: center; padding: 40px;">لا توجد تحليلات محفوظة بعد</p>';
+                return;
+            }
+            
+            let html = '';
+            analysisHistory.forEach(item => {
+                html += `
+                    <div class="history-item">
+                        <div>
+                            <strong>${item.subject}</strong>
+                            <p style="color: #666; font-size: 0.9em; margin-top: 5px;">
+                                ${item.date} • ${item.totalQuestions} سؤال • ${item.mode === 'teacher' ? 'وضع الأستاذ' : 'وضع الطالب'}
+                            </p>
+                        </div>
+                        <button class="btn btn-success" onclick="loadHistoryItem(${item.id})" style="padding: 8px 15px;">
+                            عرض
+                        </button>
+                    </div>
+                `;
+            });
+            list.innerHTML = html;
+        }
+
+        function loadHistoryItem(id) {
+            const item = analysisHistory.find(h => h.id === id);
+            if (item) {
+                analysisResults = item.data;
+                displayResults(item.data);
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+                document.getElementById('upload-tab').classList.add('active');
+                document.querySelector('.tab-btn:first-child').classList.add('active');
+            }
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Export functions
+        function exportReport(format) {
+            if (!analysisResults) {
+                alert('لا توجد نتائج لتصديرها');
+                return;
+            }
+            
+            if (format === 'json') {
+                const dataStr = JSON.stringify(analysisResults, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                const exportFileDefaultName = 'exam_analysis_' + Date.now() + '.json';
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                closeModal('exportModal');
+                alert('✅ تم تصدير التقرير بصيغة JSON');
+            } else if (format === 'pdf') {
+                alert('📄 تصدير PDF قيد التطوير - استخدم زر الطباعة حالياً');
+            } else if (format === 'excel') {
+                alert('📊 تصدير Excel قيد التطوير');
+            }
+        }
+
+        function shareResults() {
+            if (!analysisResults) {
+                alert('لا توجد نتائج للمشاركة');
+                return;
+            }
+            
+            const shareText = `تحليل امتحان: ${analysisResults.exam_info.subject}\nعدد الأسئلة: ${analysisResults.exam_info.total_questions}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'نتائج تحليل الامتحان',
+                    text: shareText
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                navigator.clipboard.writeText(shareText);
+                alert('✅ تم نسخ ملخص التقرير');
+            }
+        }
+
+        async function solveHomework() {
+            const homeworkText = document.getElementById('homeworkText').value.trim();
+            const style = document.getElementById('homeworkStyle').value;
+            const resultDiv = document.getElementById('homeworkResult');
+            if (!homeworkText) {
+                alert(t('emptyHomework'));
+                return;
+            }
+            if (window.location.protocol === 'file:') {
+                alert('⚠️ ' + t('fileProtocol'));
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="homework-result"><strong>' + t('homeworkLoading') + '</strong></div>';
+            const prompt = 'You are an educational homework helper. Respond in ' + (languageNames[currentLanguage] || 'Arabic') + '.\n'
+                + 'Help the student understand and solve the task. Do not claim the work is written by the student, do not help bypass academic rules, and do not add tricks for hiding AI use. Use a natural, clear, student-friendly explanation.\n'
+                + 'Style requested: ' + style + '.\n'
+                + 'Task:\n' + homeworkText + '\n\n'
+                + 'Return valid JSON only with this shape:\n'
+                + '{\n'
+                + '  "problem_summary": "short summary",\n'
+                + '  "steps": ["step 1", "step 2"],\n'
+                + '  "suggested_answer": "answer or solution draft",\n'
+                + '  "common_mistakes": ["mistake 1"],\n'
+                + '  "student_checklist": ["check 1"],\n'
+                + '  "practice_variant": "similar practice question"\n'
+                + '}';
+
+            try {
+                const response = await fetch(getApiUrl(), {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: "claude-sonnet-4-20250514",
+                        max_tokens: 4000,
+                        system: "Return valid JSON only. No markdown fences, no extra text.",
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+                if (!response.ok) {
+                    const errData = await response.json().catch(() => ({}));
+                    throw new Error('خطأ من الخادم: ' + response.status + ' - ' + (errData?.error?.message || ''));
+                }
+                const data = await response.json();
+                let text = data.content.filter(item => item.type === "text").map(item => item.text).join("\n");
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                if (jsonMatch) text = jsonMatch[0];
+                displayHomeworkResults(JSON.parse(text));
+            } catch (error) {
+                console.error('Homework error:', error);
+                resultDiv.innerHTML = '<div class="homework-result"><strong>⚠️ ' + error.message + '</strong></div>';
+            }
+        }
+
+        function listItems(items) {
+            if (!items || !items.length) return '';
+            return '<ul>' + items.map(item => '<li>' + item + '</li>').join('') + '</ul>';
+        }
+
+        function displayHomeworkResults(result) {
+            document.getElementById('homeworkResult').innerHTML =
+                '<div class="homework-result">'
+                + '<h4>' + t('summary') + '</h4>'
+                + '<p>' + (result.problem_summary || '') + '</p>'
+                + '<h4>' + t('steps') + '</h4>'
+                + listItems(result.steps)
+                + '<h4>' + t('answer') + '</h4>'
+                + '<p>' + (result.suggested_answer || '') + '</p>'
+                + '<h4>' + t('mistakes') + '</h4>'
+                + listItems(result.common_mistakes)
+                + '<h4>' + t('checklist') + '</h4>'
+                + listItems(result.student_checklist)
+                + '<h4>' + t('variant') + '</h4>'
+                + '<p>' + (result.practice_variant || '') + '</p>'
+                + '<div class="homework-note">' + t('note') + '</div>'
+                + '</div>';
+        }
+
+        function printReport() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
