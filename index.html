@@ -1842,12 +1842,31 @@ ${text}
                 }
                 const data = await response.json();
                 let text = data.content.filter(item => item.type === "text").map(item => item.text).join("\n");
-                const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (jsonMatch) text = jsonMatch[0];
-                displayHomeworkResults(JSON.parse(text));
+                displayHomeworkResults(parseAiJson(text));
             } catch (error) {
                 console.error('Homework error:', error);
                 resultDiv.innerHTML = '<div class="homework-result"><strong>⚠️ ' + error.message + '</strong></div>';
+            }
+        }
+
+        function parseAiJson(text) {
+            let cleaned = String(text || '').trim();
+            cleaned = cleaned
+                .replace(/^```(?:json)?\s*/i, '')
+                .replace(/```\s*$/i, '')
+                .trim();
+
+            const firstBrace = cleaned.indexOf('{');
+            const lastBrace = cleaned.lastIndexOf('}');
+            if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+                cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+            }
+
+            try {
+                return JSON.parse(cleaned);
+            } catch (error) {
+                console.error('AI JSON received:', text);
+                throw new Error('وصل الرد بتنسيق غير صحيح. أعد المحاولة مرة ثانية.');
             }
         }
 
