@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -914,6 +914,10 @@
 
     <script src="config.js"></script>
     <script>
+        if (!window.EXAM_ANALYZER_API_URL || window.EXAM_ANALYZER_API_URL === 'PASTE_SUPABASE_FUNCTION_URL_HERE') {
+            window.EXAM_ANALYZER_API_URL = 'https://fkkkzphjykdgyzndidgj.supabase.co/functions/v1/gemini-proxy';
+        }
+
         // Global state
         let currentMode = 'teacher';
         let currentInputMethod = 'text';
@@ -1157,7 +1161,7 @@
                 }
 
                 // Call API
-                const response = await fetch(getApiUrl(), {
+                const response = await fetch(window.EXAM_ANALYZER_API_URL, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -1658,7 +1662,7 @@ ${text}
                 + '}';
 
             try {
-                const response = await fetch(getApiUrl(), {
+                const response = await fetch(window.EXAM_ANALYZER_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
