@@ -652,6 +652,49 @@
             margin: 15px 0;
         }
 
+        .homework-attachment {
+            background: #f8fafc;
+            border: 2px dashed #94a3b8;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 14px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .homework-attachment:hover {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .homework-file-info {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+            color: #065f46;
+            font-weight: 700;
+        }
+
+        .homework-file-info.active {
+            display: flex;
+        }
+
+        .homework-file-info button {
+            border: 0;
+            background: #fee2e2;
+            color: #991b1b;
+            border-radius: 8px;
+            padding: 8px 10px;
+            cursor: pointer;
+            font-weight: 800;
+        }
+
         .homework-result {
             margin-top: 20px;
             background: #f8fafc;
@@ -901,6 +944,15 @@
                         <label id="homeworkQuestionLabel">نص السؤال أو الواجب:</label>
                         <textarea id="homeworkText" placeholder="اكتب السؤال هنا..."></textarea>
                     </div>
+                    <div class="homework-attachment" onclick="document.getElementById('homeworkFile').click()">
+                        <input type="file" id="homeworkFile" accept="image/*,.pdf,application/pdf" style="display: none;" onchange="handleHomeworkFileUpload(event)">
+                        <strong id="homeworkFileTitle">📎 رفع صورة السؤال أو ملف PDF</strong>
+                        <p id="homeworkFileHint" style="color: #64748b; margin-top: 6px;">يمكنك رفع JPG, PNG, WEBP أو PDF، ويمكنك كتابة ملاحظة مع الملف في مربع النص.</p>
+                        <div id="homeworkFileInfo" class="homework-file-info">
+                            <span id="homeworkFileName"></span>
+                            <button type="button" onclick="clearHomeworkFile(event)">حذف</button>
+                        </div>
+                    </div>
                     <div class="homework-controls">
                         <label id="homeworkStyleLabel" for="homeworkStyle">طريقة المساعدة:</label>
                         <select id="homeworkStyle">
@@ -963,6 +1015,7 @@
         let currentInputMethod = 'text';
         let uploadedImage = null;
         let uploadedFile = null;
+        let homeworkFile = null;
         let analysisResults = null;
         let analysisHistory = [];
         let currentLanguage = 'ar';
@@ -976,8 +1029,9 @@
                 homeworkTitle: '✍️ مساعد الواجب التعليمي',
                 homeworkIntro: 'اكتب السؤال أو الوظيفة، وسيعطيك المساعد شرحاً وخطوات حل بأسلوب طالب فاهم، مع نقاط مراجعة تساعدك تتعلم لا تنسخ فقط.',
                 homeworkQuestionLabel: 'نص السؤال أو الواجب:', homeworkStyleLabel: 'طريقة المساعدة:', homeworkSolveBtn: '✨ ساعدني في الحل',
-                homeworkPlaceholder: 'اكتب السؤال هنا...', styles: ['شرح بخطوات', 'تلميحات أولاً', 'حل نموذجي مع تفسير'],
-                emptyHomework: 'الرجاء إدخال نص السؤال أو الواجب', homeworkLoading: 'جارٍ إعداد المساعدة...', fileProtocol: 'يجب فتح الملف عبر خادم ويب (localhost) وليس مباشرة من المجلد.',
+                homeworkPlaceholder: 'اكتب السؤال هنا أو ارفع صورة/PDF...', styles: ['شرح بخطوات', 'تلميحات أولاً', 'حل نموذجي مع تفسير'],
+                homeworkFileTitle: '📎 رفع صورة السؤال أو ملف PDF', homeworkFileHint: 'يمكنك رفع JPG, PNG, WEBP أو PDF، ويمكنك كتابة ملاحظة مع الملف في مربع النص.', removeFile: 'حذف',
+                emptyHomework: 'الرجاء إدخال نص السؤال أو رفع صورة/PDF', homeworkLoading: 'جارٍ إعداد المساعدة...', fileProtocol: 'يجب فتح الملف عبر خادم ويب (localhost) وليس مباشرة من المجلد.',
                 summary: 'ملخص المطلوب', steps: 'خطوات الحل', answer: 'الإجابة المقترحة', mistakes: 'أخطاء شائعة', checklist: 'قائمة مراجعة للطالب', variant: 'تدريب مشابه', note: 'ملاحظة: استخدم الناتج للفهم والمراجعة، واكتب إجابتك النهائية بأسلوبك أنت.'
             },
             en: {
@@ -988,8 +1042,9 @@
                 homeworkTitle: '✍️ Educational Homework Helper',
                 homeworkIntro: 'Paste a question or assignment to get clear steps, a student-friendly explanation, and review points that help you learn instead of only copying.',
                 homeworkQuestionLabel: 'Question or assignment text:', homeworkStyleLabel: 'Help style:', homeworkSolveBtn: '✨ Help me solve it',
-                homeworkPlaceholder: 'Write the question here...', styles: ['Step-by-step explanation', 'Hints first', 'Model answer with explanation'],
-                emptyHomework: 'Please enter the question or assignment text', homeworkLoading: 'Preparing help...', fileProtocol: 'Open this file through a local web server (localhost), not directly from the folder.',
+                homeworkPlaceholder: 'Write the question here or upload an image/PDF...', styles: ['Step-by-step explanation', 'Hints first', 'Model answer with explanation'],
+                homeworkFileTitle: '📎 Upload a question image or PDF', homeworkFileHint: 'You can upload JPG, PNG, WEBP, or PDF, and add a note in the text box.', removeFile: 'Remove',
+                emptyHomework: 'Please enter text or upload an image/PDF', homeworkLoading: 'Preparing help...', fileProtocol: 'Open this file through a local web server (localhost), not directly from the folder.',
                 summary: 'Task Summary', steps: 'Solution Steps', answer: 'Suggested Answer', mistakes: 'Common Mistakes', checklist: 'Student Checklist', variant: 'Similar Practice', note: 'Note: Use this to understand and review, then write your final answer in your own style.'
             },
             tr: {
@@ -1000,8 +1055,9 @@
                 homeworkTitle: '✍️ Eğitici Ödev Yardımcısı',
                 homeworkIntro: 'Soruyu veya ödevi yaz; yardımcı sana anlaşılır adımlar, öğrenci dostu açıklama ve öğrenmeni destekleyen kontrol noktaları verir.',
                 homeworkQuestionLabel: 'Soru veya ödev metni:', homeworkStyleLabel: 'Yardım biçimi:', homeworkSolveBtn: '✨ Çözmeme yardım et',
-                homeworkPlaceholder: 'Soruyu buraya yaz...', styles: ['Adım adım açıklama', 'Önce ipuçları', 'Açıklamalı örnek çözüm'],
-                emptyHomework: 'Lütfen soru veya ödev metnini girin', homeworkLoading: 'Yardım hazırlanıyor...', fileProtocol: 'Dosyayı doğrudan klasörden değil, yerel bir web sunucusu (localhost) üzerinden açın.',
+                homeworkPlaceholder: 'Soruyu buraya yazın veya görsel/PDF yükleyin...', styles: ['Adım adım açıklama', 'Önce ipuçları', 'Açıklamalı örnek çözüm'],
+                homeworkFileTitle: '📎 Soru görseli veya PDF yükle', homeworkFileHint: 'JPG, PNG, WEBP veya PDF yükleyebilir ve metin kutusuna not ekleyebilirsiniz.', removeFile: 'Sil',
+                emptyHomework: 'Lütfen metin girin veya görsel/PDF yükleyin', homeworkLoading: 'Yardım hazırlanıyor...', fileProtocol: 'Dosyayı doğrudan klasörden değil, yerel bir web sunucusu (localhost) üzerinden açın.',
                 summary: 'Görev Özeti', steps: 'Çözüm Adımları', answer: 'Önerilen Cevap', mistakes: 'Yaygın Hatalar', checklist: 'Öğrenci Kontrol Listesi', variant: 'Benzer Alıştırma', note: 'Not: Bunu anlamak ve tekrar etmek için kullan; son cevabını kendi üslubunla yaz.'
             }
         };
@@ -1034,6 +1090,10 @@
             document.getElementById('homeworkStyleLabel').textContent = t('homeworkStyleLabel');
             document.getElementById('homeworkSolveBtn').textContent = t('homeworkSolveBtn');
             document.getElementById('homeworkText').placeholder = t('homeworkPlaceholder');
+            document.getElementById('homeworkFileTitle').textContent = t('homeworkFileTitle');
+            document.getElementById('homeworkFileHint').textContent = t('homeworkFileHint');
+            const removeButton = document.querySelector('#homeworkFileInfo button');
+            if (removeButton) removeButton.textContent = t('removeFile');
             document.querySelectorAll('#homeworkStyle option').forEach((opt, i) => opt.textContent = t('styles')[i]);
         }
 
@@ -1132,6 +1192,49 @@
                     </div>
                 `;
             }
+        }
+
+        function handleHomeworkFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const allowed = file.type.startsWith('image/') || file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+            if (!allowed) {
+                alert('يرجى رفع صورة أو ملف PDF فقط');
+                event.target.value = '';
+                return;
+            }
+
+            const maxSizeMb = 15;
+            if (file.size > maxSizeMb * 1024 * 1024) {
+                alert('حجم الملف كبير. الحد الأقصى ' + maxSizeMb + 'MB');
+                event.target.value = '';
+                return;
+            }
+
+            homeworkFile = file;
+            const size = file.size > 1024 * 1024
+                ? (file.size / 1024 / 1024).toFixed(2) + ' MB'
+                : (file.size / 1024).toFixed(1) + ' KB';
+            document.getElementById('homeworkFileName').textContent = '✅ ' + file.name + ' (' + size + ')';
+            document.getElementById('homeworkFileInfo').classList.add('active');
+        }
+
+        function clearHomeworkFile(event) {
+            if (event) event.stopPropagation();
+            homeworkFile = null;
+            document.getElementById('homeworkFile').value = '';
+            document.getElementById('homeworkFileName').textContent = '';
+            document.getElementById('homeworkFileInfo').classList.remove('active');
+        }
+
+        function readFileAsBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(String(reader.result).split(',')[1]);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
 
         // Main analysis function
@@ -1677,7 +1780,7 @@ ${text}
             const homeworkText = document.getElementById('homeworkText').value.trim();
             const style = document.getElementById('homeworkStyle').value;
             const resultDiv = document.getElementById('homeworkResult');
-            if (!homeworkText) {
+            if (!homeworkText && !homeworkFile) {
                 alert(t('emptyHomework'));
                 return;
             }
@@ -1696,7 +1799,8 @@ ${text}
                 + 'A^-1 = (1 / det(A)) adj(A)\n'
                 + 'Keep notation readable in plain text: det(A), A^-1, M_ij, C_ij, fractions like 1/3, and arrows like =>.\n'
                 + 'Style requested: ' + style + '.\n'
-                + 'Task:\n' + homeworkText + '\n\n'
+                + 'Task text or student note:\n' + (homeworkText || 'The question is in the attached image/PDF.') + '\n\n'
+                + (homeworkFile ? 'The assignment/question is attached as a file. Read the file carefully before solving.\n\n' : '')
                 + 'Return valid JSON only with this shape:\n'
                 + '{\n'
                 + '  "problem_summary": "short summary",\n'
@@ -1710,6 +1814,18 @@ ${text}
                 + '}';
 
             try {
+                let messageContent = [{ type: "text", text: prompt }];
+                if (homeworkFile) {
+                    const fileData = await readFileAsBase64(homeworkFile);
+                    messageContent.push({
+                        type: "file",
+                        source: {
+                            media_type: homeworkFile.type || (homeworkFile.name.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'image/png'),
+                            data: fileData
+                        }
+                    });
+                }
+
                 const response = await fetch(window.EXAM_ANALYZER_API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -1717,7 +1833,7 @@ ${text}
                         model: "claude-sonnet-4-20250514",
                         max_tokens: 4000,
                         system: "Return valid JSON only. No markdown fences, no extra text.",
-                        messages: [{ role: "user", content: prompt }]
+                        messages: [{ role: "user", content: messageContent }]
                     })
                 });
                 if (!response.ok) {
